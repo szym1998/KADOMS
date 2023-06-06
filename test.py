@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-%matplotlib inline
-
 
 from visual_kinematics.RobotSerial import *
-from visual_kinematics.RobotTrajectory import *
 import numpy as np
 from math import pi
 
@@ -11,26 +8,40 @@ from math import pi
 def main():
     np.set_printoptions(precision=3, suppress=True)
 
-    dh_params = np.array([[0.34, 0., -pi / 2, 0.],
+    dh_params = np.array([[0.25, 0., -pi / 2, 0.],
                           [0., 0., pi / 2, 0.],
-                          [0.4, 0., -pi / 2, 0.],
+                          [0.25, 0., -pi / 2, 0.],
                           [0., 0., pi / 2, 0.],
-                          [0.4, 0., -pi / 2, 0.],
+                          [0.25, 0., -pi / 2, 0.],
                           [0., 0., pi / 2, 0.],
-                          [0.126, 0., 0., 0.]])
-
+                          [0.25, 0., 0., 0.]])
     robot = RobotSerial(dh_params)
 
     # =====================================
-    # inverse
+    # forward
     # =====================================
 
-    frames = [Frame.from_euler_3(np.array([0.5 * pi, 0., pi]), np.array([[0.28127], [0.], [0.63182]])),
-              Frame.from_euler_3(np.array([0.25 * pi, 0., 0.75 * pi]), np.array([[0.48127], [0.], [0.63182]])),
-              Frame.from_euler_3(np.array([0.5 * pi, 0., pi]), np.array([[0.48127], [0.], [0.63182]])),
-              Frame.from_euler_3(np.array([0.5 * pi, 0., pi]), np.array([[0.48127], [0.], [0.23182]]))]
-    trajectory = RobotTrajectory(robot, frames)
-    trajectory.show(motion="p2p")
+    theta = np.array([45,90,45,0,0,0,0])
+
+    #convert angles in degrees to radians from theta 
+    theta = np.deg2rad(theta)
+    f = robot.forward(theta)
+
+    print("-------forward-------")
+    print("end frame t_4_4:")
+    print(f.t_4_4)
+    print("end frame xyz:")
+    print(f.t_3_1.reshape([3, ]))
+    print("end frame abc:")
+    print(f.euler_3)
+    print("end frame rotational matrix:")
+    print(f.r_3_3)
+    print("end frame quaternion:")
+    print(f.q_4)
+    print("end frame angle-axis:")
+    print(f.r_3)
+
+    robot.show()
 
 
 if __name__ == "__main__":
